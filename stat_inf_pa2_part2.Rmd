@@ -1,0 +1,78 @@
+---
+title: "Analysis of ToothGrowth data"
+author: "Pranjal Mandhaniya"
+date: "Thursday 22 January 2015"
+output: html_document
+---
+
+- Load the ToothGrowth data and perform some basic exploratory data analyses.
+    We did that by boxplots.
+
+```{r}
+data(ToothGrowth)
+
+# Box and Whisker plot of Orange Juice w.r.t all
+boxplot(len ~ dose, data = ToothGrowth,xlab = "Length",ylab="Dose",
+        main = "Orange Juice subset",subset = supp == "OJ", col = "orange")
+
+# Box and Whisker plot of Vitamin C w.r.t all
+boxplot(len ~ dose, data = ToothGrowth,xlab = "Length",ylab="Dose",
+        main = "Vitamin C subset",subset = supp == "VC", col = "blue")
+```
+
+- Provide a basic summary of the data.
+
+```{r}
+summary(ToothGrowth)
+```
+
+- Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose.
+    * Examination w.r.t Suppliment type
+
+```{r}
+len_VC <- ToothGrowth[ToothGrowth$supp=="VC",]$len
+
+#95 % CI for Vitamin C suppliment
+mean(len_VC) + c(-1,1)*qnorm(.95)* sd(len_VC)/sqrt(length(len_VC))
+
+len_OJ <- ToothGrowth[ToothGrowth$supp=="OJ",]$len
+
+#95 % CI for Orange Juice suppliment
+mean(len_OJ) + c(-1,1)*qnorm(.95)* sd(len_OJ)/sqrt(length(len_OJ))
+
+# t-test hypothesis testing
+t.test(len_OJ,len_VC)
+```
+
+    * Examination w.r.t Dose in milligrams.
+    
+```{r}
+len_Dose_half <- ToothGrowth[ToothGrowth$dose==0.5,]$len
+
+#95 % CI for 0.5 mg Dose
+mean(len_Dose_half) + c(-1,1)*qnorm(.95)* sd(len_Dose_half)/sqrt(length(len_Dose_half))
+
+len_Dose_one <- ToothGrowth[ToothGrowth$dose==1,]$len
+
+#95 % CI for 1 mg Dose
+mean(len_Dose_one) + c(-1,1)*qnorm(.95)* sd(len_Dose_one)/sqrt(length(len_Dose_one))
+
+
+len_Dose_two <- ToothGrowth[ToothGrowth$dose==2,]$len
+
+#95 % CI for 2 mg Dose
+mean(len_Dose_two) + c(-1,1)*qnorm(.95)* sd(len_Dose_two)/sqrt(length(len_Dose_two))
+```
+
+### Conclusion
+    
+```{r}
+aggdt <- aggregate(len~(supp+dose),data = ToothGrowth,mean)
+library(ggplot2)
+ggplot()+ geom_line(data = aggdt,aes(x = len,y =dose,group = supp,colour = supp))
+```
+
+
+1. From our analysis we conclude that with increase in dosage the Tooth length increases.
+    
+2. Also Orange Juice suppliment performs better than Ascorbic acid(direct Vitamin C) in all dosages but mostly similar at 2 mg dosage.

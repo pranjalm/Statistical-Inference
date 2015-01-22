@@ -1,0 +1,57 @@
+---
+title: "Investigation of Central Limit Theorem"
+author: "Pranjal Mandhaniya"
+date: "Monday 22 January 2015"
+output: html_document
+---
+
+
+- <b>Overview</b>
+
+    In this project we will investigate the exponential distribution in R and compare it with the Central Limit Theorem. 
+
+- <b>Simulations</b>
+
+    We simulated it in R with rexp(n, lambda) where lambda is the rate parameter.Set seed to get always same result.Set lambda = 0.2.
+    The mean of exponential distribution is <u>1/lambda i.e. 5(theoritical mean)</u> and the standard deviation is also <u>1/lambda i.e. 5.</u> 
+
+```{r}
+# 1000 averages of 40 generated random exponentials 
+mns = NULL
+set.seed(12)
+for (i in 1 : 1000) mns = c(mns, mean(rexp(40,0.2)))
+iid <- (mns-5)/(5/sqrt(1000)) # (sample mean-theoritical mean)/std. error
+
+# 1000 generated random exponentials 
+set.seed(12)
+x <- rexp(1000,0.2)
+iid2 <- x-5/(5/sqrt(1000))
+```
+
+- <b>Sample Mean versus Theoretical Mean</b>
+
+    Perform t-test for mean comparisions 
+
+```{r, echo=TRUE}
+t.test(iid,iid2)
+```
+
+- <b>Sample Variance versus Theoretical Variance</b>
+    Perform f-test for variance comparisions.
+    
+```{r}
+var.test(iid,iid2)
+```
+
+- <b>Distribution</b>
+    Draw histogram of 1000 averages of 40 PRGN exponentials
+    
+```{r}
+hist(iid,50,col="red")   # barplot is centered arround 0 and normally ditributed
+```
+
+    Draw histogram of 1000 PRGN exponentials
+    
+```{r}
+hist(iid2,50)  #semi-normal because values can't go below zero for exponential
+```
